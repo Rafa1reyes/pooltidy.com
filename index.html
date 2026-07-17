@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PoolTidy — Pool care, minus the chaos.</title>
+<meta name="description" content="PoolTidy connects pool owners and pool pros: scheduling, service requests, payments, and routes — one tidy app for both sides of the pool.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230aa2c0'/%3E%3Cpath d='M14 58 Q26 50 38 58 T62 58 T86 58 V78 Q68 88 50 88 Q32 88 14 78 Z' fill='%23e9fbff'/%3E%3Cpath d='M14 52 Q26 44 38 52 T62 52 T86 52' stroke='%23e9fbff' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#f4fbfd; --card:#ffffff; --line:#d9edf2;
+    --aqua:#0aa2c0; --aqua-deep:#0b6d86; --navy:#0c3a4d;
+    --pro:#5e35d6; --pro-soft:#efe7ff;
+    --ink:#123742; --dim:#5a7d89; --sun:#ffb347;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 28px}
+  nav{position:sticky;top:0;z-index:50;background:rgba(244,251,253,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:900;font-size:21px;color:var(--aqua-deep);text-decoration:none}
+  .nav-links{display:flex;gap:28px;font-size:14.5px;font-weight:600}
+  .nav-links a{text-decoration:none;color:var(--dim)}
+  .nav-links a:hover{color:var(--ink)}
+  .btn{display:inline-block;background:var(--aqua);color:#fff;font-weight:800;padding:11px 22px;border-radius:12px;text-decoration:none;font-size:15px;transition:transform .12s,background .12s}
+  .btn:hover{transform:translateY(-2px);background:var(--aqua-deep)}
+  .btn.big{padding:15px 32px;font-size:17px}
+  .btn.ghost{background:transparent;color:var(--aqua-deep);border:2px solid var(--aqua)}
+  .btn.ghost:hover{background:#e6f7fb}
+  .btn.pro{background:var(--pro)}
+  .btn.pro:hover{background:#4a26b5}
+  .hero{padding:84px 0 66px;display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center}
+  .kicker{display:inline-block;background:#e0f5fa;color:var(--aqua-deep);font-size:12.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:20px;margin-bottom:20px}
+  h1{font-size:54px;line-height:1.07;font-weight:900;letter-spacing:-.02em;color:var(--navy)}
+  h1 em{font-style:normal;color:var(--aqua)}
+  .sub{font-size:19px;color:var(--dim);margin:22px 0 30px;max-width:30em}
+  .cta-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .fineprint{font-size:12.5px;color:#8fa9b2;margin-top:14px}
+  /* phone mockups */
+  .duo{display:flex;gap:20px;justify-content:center}
+  .phone{width:230px;background:var(--card);border:1px solid var(--line);border-radius:26px;padding:16px;box-shadow:0 26px 56px rgba(11,109,134,.16)}
+  .phone .ph-t{font-size:12px;font-weight:900;letter-spacing:.05em;margin-bottom:10px}
+  .phone.owner .ph-t{color:var(--aqua-deep)}
+  .phone.pro-side{transform:translateY(26px)}
+  .phone.pro-side .ph-t{color:var(--pro)}
+  .prow{display:flex;align-items:center;gap:9px;background:#f2fafc;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px;font-weight:700;margin-bottom:8px}
+  .phone.pro-side .prow{background:#f7f3ff;border-color:#e4d9fb}
+  .prow .em{font-size:16px}
+  .prow small{display:block;font-weight:600;color:var(--dim);font-size:11px}
+  .pill{margin-left:auto;font-size:10px;font-weight:900;padding:3px 8px;border-radius:9px;background:#d9f4e6;color:#0b7a5b}
+  .pill.due{background:#fff1dd;color:#a56a00}
+  section{padding:72px 0}
+  .sec-k{color:var(--aqua);font-weight:800;font-size:13.5px;letter-spacing:.1em;text-transform:uppercase}
+  h2{font-size:38px;font-weight:900;letter-spacing:-.01em;margin:10px 0 14px;color:var(--navy)}
+  .lead{color:var(--dim);font-size:17px;max-width:44em}
+  /* two-sided */
+  .sides{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:40px}
+  .side{border-radius:24px;padding:38px 34px;border:1px solid var(--line);background:var(--card)}
+  .side.pro-card{background:linear-gradient(160deg,#faf7ff,#f3ecff);border-color:#e4d9fb}
+  .side .who{font-size:13px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+  .side.owner-card .who{color:var(--aqua-deep)}
+  .side.pro-card .who{color:var(--pro)}
+  .side h3{font-size:26px;font-weight:900;margin:8px 0 16px;color:var(--navy)}
+  .side ul{list-style:none}
+  .side li{display:flex;gap:11px;margin-bottom:13px;font-size:15px;align-items:flex-start}
+  .side li .em{flex-shrink:0}
+  .side .btn{margin-top:12px}
+  .divider-quote{text-align:center;margin:66px auto 0;max-width:34em}
+  .divider-quote p{font-size:21px;font-weight:700;color:var(--navy)}
+  .divider-quote span{color:var(--dim);font-size:14px}
+  /* how */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px;counter-reset:step}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 24px;position:relative}
+  .step::before{counter-increment:step;content:counter(step);position:absolute;top:-16px;left:24px;width:32px;height:32px;border-radius:50%;background:var(--aqua);color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .step h3{font-size:17.5px;margin:8px 0 6px}
+  .step p{font-size:14.5px;color:var(--dim)}
+  .band{background:linear-gradient(135deg,var(--aqua),var(--aqua-deep));border-radius:28px;padding:60px 48px;text-align:center;margin:20px 0 40px;color:#fff}
+  .band h2{color:#fff;margin-bottom:10px}
+  .band p{color:#d6f2f8;margin-bottom:28px}
+  .band .btn{background:#fff;color:var(--aqua-deep)}
+  footer{border-top:1px solid var(--line);padding:36px 0 46px;font-size:13.5px;color:#8fa9b2}
+  .f-in{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .f-in a{color:var(--aqua-deep);text-decoration:none;font-weight:700}
+  @media(max-width:920px){
+    .hero{grid-template-columns:1fr}
+    h1{font-size:40px}
+    .sides{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr}
+    .nav-links{display:none}
+    .duo{flex-wrap:wrap}
+    .phone.pro-side{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="#">🏊 PoolTidy</a>
+  <div class="nav-links">
+    <a href="#sides">For owners &amp; pros</a><a href="#how">How it works</a>
+  </div>
+  <a class="btn" href="mailto:beta@pooltidy.com?subject=PoolTidy%20early%20access">Get early access</a>
+</div></nav>
+
+<header class="wrap hero">
+  <div>
+    <span class="kicker">💧 Now in private beta</span>
+    <h1>Pool care, minus <em>the chaos.</em></h1>
+    <p class="sub">One tidy app for both sides of the pool: owners see when their pool was serviced and pay in a tap — pros run their whole route, schedule, and billing from their pocket.</p>
+    <div class="cta-row">
+      <a class="btn big" href="mailto:beta@pooltidy.com?subject=PoolTidy%20early%20access&body=I%27m%20a%3A%20(pool%20owner%20%2F%20pool%20pro)">💧 Request an invite</a>
+      <a class="btn big ghost" href="#sides">Which side are you?</a>
+    </div>
+    <p class="fineprint">Free for pool owners · Pro plans for service companies</p>
+  </div>
+  <div class="duo">
+    <div class="phone owner">
+      <div class="ph-t">🏊 MY POOL — OWNER VIEW</div>
+      <div class="prow"><span class="em">✅</span><span>Serviced today<small>Skimmed · vacuumed · chems balanced</small></span></div>
+      <div class="prow"><span class="em">📅</span><span>Next visit<small>Tuesday, 9:00 AM — Marco</small></span></div>
+      <div class="prow"><span class="em">💸</span><span>July service<small>$120 · autopay ready</small></span><span class="pill">PAID</span></div>
+      <div class="prow"><span class="em">🛠️</span><span>Request a service<small>Filter check, green rescue, more</small></span></div>
+    </div>
+    <div class="phone pro-side">
+      <div class="ph-t">🧰 PRO VIEW — TUESDAY ROUTE</div>
+      <div class="prow"><span class="em">📍</span><span>8 stops today<small>Optimized · 22 mi loop</small></span></div>
+      <div class="prow"><span class="em">🏠</span><span>The Nguyens<small>9:00 · weekly clean</small></span><span class="pill">DONE</span></div>
+      <div class="prow"><span class="em">🏠</span><span>Casa Verde HOA<small>10:30 · 2 pools</small></span><span class="pill due">NEXT</span></div>
+      <div class="prow"><span class="em">💰</span><span>Who still owes<small>3 invoices · $410 out</small></span></div>
+    </div>
+  </div>
+</header>
+
+<section id="sides"><div class="wrap">
+  <span class="sec-k">Two sides, one app</span>
+  <h2>Built for the person who owns the pool — and the pro who keeps it blue</h2>
+  <div class="sides">
+    <div class="side owner-card">
+      <div class="who">🏊 For pool owners — free</div>
+      <h3>Know your pool is handled</h3>
+      <ul>
+        <li><span class="em">✅</span><span><b>See every visit</b> — what was done, when, by whom. No more guessing if “the pool guy came.”</span></li>
+        <li><span class="em">📅</span><span><b>Reschedule in a tap</b> — request a new time without the phone tag.</span></li>
+        <li><span class="em">🛠️</span><span><b>Request extra services</b> — filter checks, repairs, green-pool rescue.</span></li>
+        <li><span class="em">💸</span><span><b>Pay from the app</b> — see the balance, tap, done.</span></li>
+      </ul>
+      <a class="btn" href="mailto:beta@pooltidy.com?subject=PoolTidy%20beta%20—%20pool%20owner">Join as an owner</a>
+    </div>
+    <div class="side pro-card">
+      <div class="who">🧰 For pool pros — the business end</div>
+      <h3>Run your whole route from your pocket</h3>
+      <ul>
+        <li><span class="em">🗓️</span><span><b>Day schedule &amp; stops</b> — every customer, every visit, marked serviced as you go.</span></li>
+        <li><span class="em">👥</span><span><b>Customer manager</b> — pools, gate codes, chem notes, and history in one place.</span></li>
+        <li><span class="em">💰</span><span><b>Get paid faster</b> — send payment requests, see who’s paid and who still owes at a glance.</span></li>
+        <li><span class="em">💬</span><span><b>Message customers</b> — updates and photos straight from the pool deck.</span></li>
+      </ul>
+      <a class="btn pro" href="mailto:beta@pooltidy.com?subject=PoolTidy%20beta%20—%20pool%20pro">Join as a pro</a>
+    </div>
+  </div>
+  <div class="divider-quote">
+    <p>“Did the pool guy come today?”</p>
+    <span>— every pool owner, every week, forever. PoolTidy answers it once and for all.</span>
+  </div>
+</div></section>
+
+<section id="how"><div class="wrap">
+  <span class="sec-k">How it works</span>
+  <h2>Tidy in three steps</h2>
+  <div class="steps">
+    <div class="step"><h3>Pros add their customers</h3><p>Import your route — homes, HOAs, gate codes, service days. Takes an afternoon, saves every week after.</p></div>
+    <div class="step"><h3>Owners get the app</h3><p>Each customer sees their own pool: visits, next appointment, balance. You look instantly more professional.</p></div>
+    <div class="step"><h3>Everyone stops calling</h3><p>Reschedules, service requests, and payments all happen in-app. The phone tag ends here.</p></div>
+  </div>
+</div></section>
+
+<div class="wrap"><div class="band">
+  <h2>Get your pool — or your pool business — tidy</h2>
+  <p>We’re onboarding a small group of owners and pros for the beta. Tell us which side of the skimmer you’re on.</p>
+  <a class="btn big" href="mailto:beta@pooltidy.com?subject=PoolTidy%20early%20access&body=I%27m%20a%3A%20(pool%20owner%20%2F%20pool%20pro)">💧 Request early access</a>
+</div></div>
+
+<footer><div class="wrap f-in">
+  <span>© 2026 Spindola Software · PoolTidy™</span>
+  <span>Questions? <a href="mailto:hello@pooltidy.com">hello@pooltidy.com</a></span>
+</div></footer>
+
+</body>
+</html>
